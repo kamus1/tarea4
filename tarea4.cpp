@@ -129,6 +129,7 @@ void hubert_write(string nombreArchivo){
 int main(){
     //para medir el tiempo de ejecucion (creo que hay que borrarlo del codigo para la entrega)
     unsigned t0, t1;
+    
     funcionContador();
     
     hubert_read();
