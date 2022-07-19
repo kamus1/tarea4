@@ -3,6 +3,8 @@
 
 using namespace std;
 
+int cantidad, *valores;
+string nombreArchivo = "input.hubert";
 
 // trim from end (right)
 inline std::string& rtrim(std::string& s, const char* t = " \t\n\r\f\v")
@@ -25,8 +27,8 @@ inline std::string& trim(std::string& s, const char* t = " \t\n\r\f\v")
 }
 
 
-// funcion que retorna la cantidad de elementos 
-int funcionContador(string nombreArchivo){
+// funcion que determina la cantidad de elementos del archivo 
+void funcionContador(){
     int contador = 0;
     string texto;
     ifstream archivo;
@@ -39,26 +41,18 @@ int funcionContador(string nombreArchivo){
             contador ++;
         }
      }
-     return contador;
+
+     cantidad = contador;
+     archivo.close();
 }
 
-int main(){
-    string nombreArchivo = "input.hubert";
+//almacena los elementos del archivo en un array
+void hubert_read(){
     string texto;
-    
     ifstream archivo;
-        archivo.open(nombreArchivo, ios::in);//abrir archivo en modo lectura
+    archivo.open(nombreArchivo, ios::in);//abrir archivo en modo lectura
 
-    //verificar que el archivo se haya abierto correctamente
-    if(archivo.fail()){
-        cout << "No se pudo abrir el archivo" << endl;
-        return 0;
-    }
-
-    int cantidad = funcionContador(nombreArchivo);
-
-    //definir puntero y array
-    int *valores;
+    //definir puntero array
     valores = new int[cantidad];
 
     //agregar valores a array
@@ -72,32 +66,48 @@ int main(){
             i++;
         }
      }
+     archivo.close();
+}
 
-        //Insertion sort
-        int aux, posicion; 
+//Insertion Sort
+void Insertion_Sort(){
+    int aux, i, posicion; 
 
-        for(i =0;i<cantidad; i++){
-            posicion = i;
-            aux = valores[i];
+    for(i =0;i<cantidad; i++){
+        posicion = i;
+        aux = valores[i];
 
-            while((posicion>0) && (valores[posicion-1] > aux)){
-                valores[posicion] = valores[posicion -1];
-                posicion --;
-            }
-            valores[posicion] = aux;
+        while((posicion>0) && (valores[posicion-1] > aux)){
+            valores[posicion] = valores[posicion -1];
+            posicion --;
         }
+        valores[posicion] = aux;
+    }
 
+}
+
+void hubert_write(){
         //crear archivo con valores ordenados por insertion sort
         ofstream archivoInsertion;
         archivoInsertion.open("output_1.hubert");
 
         //agregar valores a archivo
-        for(i = 0; i<cantidad; i++){
+        for(int i = 0; i<cantidad; i++){
             archivoInsertion<<valores[i]<<endl;
         }
         archivoInsertion.close();
-        //liberar memoria
-        delete [] valores;
+}
+
+int main(){
+    funcionContador();
+    
+    hubert_read();
+    Insertion_Sort();
+    hubert_write();
+
+      
+    //liberar memoria
+    delete[] valores;
 
     return 0;
 }
