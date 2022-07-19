@@ -1,5 +1,7 @@
 #include<iostream>
 #include<fstream>
+#include <ctime> 
+ 
 
 using namespace std;
 
@@ -86,28 +88,72 @@ void Insertion_Sort(){
 
 }
 
-void hubert_write(){
+//codigo control c control v de quicksort CAAAAAMBIAR
+void Quick_Sort(int* xArray, int xSize)
+{
+        int lPivot = xArray[xSize-1];
+        int lIndexOfLargestElement = 0;
+        for (int i = 0; i < xSize-1; i++)
+        {
+                if (xArray[i] < lPivot)
+                {
+                        // Swap largest element with this
+                        int lTmp = xArray[i];
+                        xArray[i] = xArray[lIndexOfLargestElement];
+                        xArray[lIndexOfLargestElement]  = lTmp;
+                        lIndexOfLargestElement++;
+                }
+        }
+        // swap pivot with xArray[lIndexOfLargestElement]
+        int lTmp = xArray[lIndexOfLargestElement];
+        xArray[lIndexOfLargestElement] = xArray[xSize-1];
+        xArray[xSize-1] = lTmp;
+        if (lIndexOfLargestElement > 1)
+                Quick_Sort(xArray, lIndexOfLargestElement);
+        if (xSize-lIndexOfLargestElement-1 > 1)
+                Quick_Sort(xArray+lIndexOfLargestElement+1, xSize-lIndexOfLargestElement-1);
+}
+
+void hubert_write(string nombreArchivo){
         //crear archivo con valores ordenados por insertion sort
-        ofstream archivoInsertion;
-        archivoInsertion.open("output_1.hubert");
+        ofstream archivo;
+        archivo.open(nombreArchivo);
 
         //agregar valores a archivo
         for(int i = 0; i<cantidad; i++){
-            archivoInsertion<<valores[i]<<endl;
+            archivo<<valores[i]<<endl;
         }
-        archivoInsertion.close();
+        archivo.close();
 }
 
 int main(){
+    //para medir el tiempo de ejecucion (creo que hay que borrarlo del codigo para la entrega)
+    unsigned t0, t1;
     funcionContador();
     
     hubert_read();
+    t0=clock();
     Insertion_Sort();
-    hubert_write();
-
-      
+    t1 = clock();
+    hubert_write("output_1.hubert");
     //liberar memoria
     delete[] valores;
+    //calculo del tiempo
+    double time = (double(t1-t0)/CLOCKS_PER_SEC);
 
+
+    hubert_read();
+    t0=clock();
+    Quick_Sort(valores, cantidad);
+    t1=clock();
+    hubert_write("output_2.hubert");
+    //liberar memoria
+    delete[] valores;
+    //calculo del tiempo
+    double time2 = (double(t1-t0)/CLOCKS_PER_SEC);
+
+    //muestra por pantalla los tiempos de ejecución 
+    cout << "Tiempo de ejecucion de Insertion Sort: " << time << endl;
+    cout << "Tiempo de ejecucion de Quick Sort: " << time2 << endl;
     return 0;
 }
